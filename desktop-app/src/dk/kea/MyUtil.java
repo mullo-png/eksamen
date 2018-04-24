@@ -5,5 +5,5 @@ package dk.kea;
  */
 public class MyUtil {
     private static final String API_KEY = "Flight%20booker%201.2%20plus%20edition";
-    public static final String API_URL = "http://206.189.48.89/API.php?API_KEY=" + API_KEY;
+    public static final String API_URL = "http://localhost/API.php?API_KEY=" + API_KEY;
 }

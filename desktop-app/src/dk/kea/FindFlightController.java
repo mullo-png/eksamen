@@ -58,17 +58,21 @@ public class FindFlightController {
         int fromAirportId = selectedFrom.getId();
         int toAirportId = selectedTo.getId();
         LocalDate date = inputDate.getValue();
+        String dateString =
+                date.getYear() + "-" +
+                        (("" + date.getDayOfMonth()).length() == 1 ? "0" + date.getDayOfMonth() : date.getDayOfMonth()) + "-" +
+                        (("" + date.getMonthValue()).length() == 1 ? "0" + date.getMonthValue() : date.getMonthValue());
         System.out.println("------FIND---");
 
         System.out.println("from: " + fromAirportId);
         System.out.println("to: " + toAirportId);
-        System.out.println("date: " + date);
+        System.out.println("date: " + dateString);
 
         try {
             URL url = new URL(MyUtil.API_URL +
                     "&action=get" +
                     "&items=flights" +
-                    "&date=" + date +
+                    "&date=" + dateString +
                     "&from=" + fromAirportId +
                     "&to=" + toAirportId
             );
