@@ -1,9 +1,11 @@
-package sample;
+package dk.kea;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import dk.kea.model.Passenger;
+import dk.kea.model.RespFromAPI;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,14 +16,10 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.controlsfx.control.textfield.TextFields;
-import sample.model.Passenger;
-import sample.model.RespFromAPI;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Iterator;
 
 public class LoginController {
 
@@ -68,13 +66,16 @@ public class LoginController {
             System.out.println(passenger);
 
             //load new scene
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("find_flight.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("view/find_flight.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.DECORATED);
             stage.setTitle("FlyBook :: Find Flight");
-            stage.setScene(new Scene(root1));
+            Scene scene = new Scene(root1, 640,400);
+            scene.setUserData(passenger);
+            stage.setScene(scene);
+            stage.setResizable(false);
             stage.show();
 
 

@@ -1,4 +1,4 @@
-package sample.model;
+package dk.kea.model;
 
 /**
  * Created by coag on 23-04-2018.

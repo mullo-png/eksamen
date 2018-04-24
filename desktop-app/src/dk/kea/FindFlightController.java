@@ -1,29 +1,22 @@
-package sample;
+package dk.kea;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import dk.kea.model.Passenger;
+import dk.kea.model.RespFromAPI;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.converter.LocalDateStringConverter;
+import javafx.scene.layout.VBox;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
-import sample.model.Airport;
-import sample.model.Flight;
-import sample.model.Passenger;
-import sample.model.RespFromAPI;
+import dk.kea.model.Airport;
+import dk.kea.model.Flight;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -44,13 +37,14 @@ public class FindFlightController {
     private DatePicker inputDate;
 
     @FXML
-    private TableView tbl;
+    private VBox vBoxFlights;
 
     @FXML
     private Label labelStatus;
 
     private Airport selectedFrom;
     private Airport selectedTo;
+    private ToggleGroup group;
 
     public void findFrom(KeyEvent keyEvent) {
         findAirports(inputFrom, true);
@@ -71,7 +65,7 @@ public class FindFlightController {
         System.out.println("date: " + date);
 
         try {
-            URL url = new URL(MyUtil.API2_URL +
+            URL url = new URL(MyUtil.API_URL +
                     "&action=get" +
                     "&items=flights" +
                     "&date=" + date +
@@ -116,16 +110,18 @@ public class FindFlightController {
 
 
             }
+            if (!airports.isEmpty()) {
+                group = new ToggleGroup();
 
-            List<String> tt = new ArrayList<String>();
-            tt.add("flg no");
-            tt.add("dep");
-            tt.add("arr");
-            tt.add("pla");
-            tt.add("gate");
+                vBoxFlights.getChildren().remove(0);
+                for (Flight f : airports) {
+                    RadioButton rbtn = new RadioButton(f.toString());
+                    rbtn.setToggleGroup(group);
+                    rbtn.setUserData(f);
+                    vBoxFlights.getChildren().add(rbtn);
+                }
 
-            tbl.setItems(FXCollections.observableList(tt));
-
+            }
 
 
             System.out.println(airports);
@@ -208,4 +204,51 @@ public class FindFlightController {
     }
 
 
+    public void bookFlight(ActionEvent actionEvent) {
+        Flight f = (Flight) group.getSelectedToggle().getUserData();
+        System.out.println("---book select------");
+        System.out.println(f);
+
+        Passenger passenger = (Passenger) vBoxFlights.getScene().getUserData();
+
+        try {
+            URL url = new URL(MyUtil.API_URL +
+                    "&action=book" +
+                    "&passenger=" + passenger.getId() +
+                    "&token=" + passenger.getToken() +
+                    "&flight=" + f.getId()
+            );
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            InputStream resp = con.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(resp);
+            Scanner sc = new Scanner(resp);
+            String data = sc.nextLine();
+
+            //byte[] data = new byte[1024];
+            //resp.read(data);
+
+            System.out.println("-----Resp------ " + url);
+
+            String respString = new String(data).trim();
+
+            System.out.println(respString);
+
+            JsonArray respJsonArray = new JsonParser().parse(respString.trim()).getAsJsonArray();
+
+            System.out.println("---GSON---");
+            System.out.println(respJsonArray.toString());
+
+            Gson g = new Gson();
+            JsonElement element0 = respJsonArray.get(0);
+            RespFromAPI rfa = g.fromJson(element0, RespFromAPI.class);
+            System.out.println(rfa);
+            labelStatus.setText(rfa.toString());
+
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
 }

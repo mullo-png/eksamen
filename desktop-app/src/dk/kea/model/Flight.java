@@ -1,4 +1,4 @@
-package sample.model;
+package dk.kea.model;
 
 /**
  * Created by coag on 23-04-2018.
@@ -18,16 +18,7 @@ public class Flight {
 
     @Override
     public String toString() {
-        return "Flight{" +
-                "id=" + id +
-                ", number='" + number + '\'' +
-                ", airport_from=" + airport_from +
-                ", airport_to=" + airport_to +
-                ", date_time_depart='" + date_time_depart + '\'' +
-                ", date_time_arriv='" + date_time_arriv + '\'' +
-                ", airplane=" + airplane +
-                ", gate='" + gate + '\'' +
-                '}';
+        return number + " | Departure: "  +date_time_depart + " | ETA: " + date_time_arriv + " | Gate: " + gate;
     }
 
     public int getId() {

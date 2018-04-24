@@ -10,7 +10,7 @@
 
 
 <GridPane alignment="center" hgap="10" vgap="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
-          fx:controller="sample.LoginController">
+          fx:controller="dk.kea.LoginController">
     <columnConstraints>
         <ColumnConstraints minWidth="10.0" prefWidth="100.0"/>
         <ColumnConstraints/>
